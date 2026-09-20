@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>乌溪沙租房监控报告</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  background: #f5f6fa;
+  color: #2d3436;
+  line-height: 1.6;
+  padding: 12px;
+}
+.header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 20px 16px;
+  border-radius: 14px;
+  margin-bottom: 16px;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+.header h1 { font-size: 18px; font-weight: 700; margin-bottom: 6px; }
+.header .meta { font-size: 13px; opacity: 0.9; }
+.header .counts { display: flex; gap: 10px; margin-top: 10px; flex-wrap: wrap; }
+.header .count {
+  background: rgba(255,255,255,0.25);
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 13px;
+}
+/* 醒目横幅：有变化→红橙告警；无变化→绿色确认 */
+.banner {
+  border-radius: 14px;
+  padding: 16px;
+  margin: 4px 0 16px;
+  text-align: center;
+  font-size: 17px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.12);
+}
+.banner-alert {
+  background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+  color: white;
+}
+.banner-ok {
+  background: linear-gradient(135deg, #2ed573 0%, #1abc9c 100%);
+  color: white;
+}
+.estate-label {
+  font-size: 14px;
+  font-weight: 700;
+  color: #667eea;
+  margin: 16px 4px 10px;
+  padding-left: 10px;
+  border-left: 4px solid #667eea;
+}
+.card {
+  background: white;
+  border-radius: 14px;
+  padding: 16px;
+  margin-bottom: 12px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+}
+.card .title {
+  font-size: 15px;
+  font-weight: 600;
+  color: #2d3436;
+  margin-bottom: 8px;
+  line-height: 1.5;
+}
+.badge {
+  display: inline-block;
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  margin-left: 6px;
+  vertical-align: middle;
+  font-weight: 600;
+}
+.badge.new { background: #e74c3c; color: white; }
+.badge.update { background: #f39c12; color: white; }
+.card .change-note { font-size: 12px; color: #f39c12; font-weight: 600; margin-bottom: 6px; }
+.card .price-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 10px;
+  margin-bottom: 4px;
+}
+.card .price {
+  font-size: 22px;
+  font-weight: 800;
+  color: #e74c3c;
+}
+.card .price-date { font-size: 12px; color: #95a5a6; font-weight: 400; white-space: nowrap; }
+.card .price span { font-size: 13px; font-weight: 500; color: #636e72; }
+.card .price-note { font-size: 12px; color: #e67e22; margin-bottom: 4px; }
+.card.discount { border-left: 4px solid #e74c3c; }
+.card.price-up { border-left: 4px solid #27ae60; }
+.card .price-up-note { font-size: 12px; color: #27ae60; margin-bottom: 4px; }
+.card .src-line { font-size: 12px; color: #95a5a6; margin-bottom: 8px; }
+.card .desc { font-size: 13px; color: #57606f; margin-bottom: 8px; }
+.card .info {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 8px 0 6px;
+}
+.card .tag {
+  background: #f1f2f6;
+  color: #57606f;
+  padding: 3px 9px;
+  border-radius: 6px;
+  font-size: 12px;
+}
+.card .tag.highlight { background: #ffeaa7; color: #d35400; }
+.detail-btn {
+  display: inline-block;
+  margin-top: 10px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  text-decoration: none;
+  padding: 9px 16px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  text-align: center;
+  width: 100%;
+}
+.detail-btn:active { opacity: 0.85; }
+.list-card { padding: 8px 16px; }
+.list-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 9px 0;
+  border-bottom: 1px solid #f0f0f5;
+}
+.list-row:last-child { border-bottom: none; }
+.list-left { display: flex; align-items: flex-start; gap: 8px; flex: 1; min-width: 0; }
+.src-tag {
+  flex-shrink: 0;
+  background: #f1f2f6;
+  color: #57606f;
+  padding: 2px 7px;
+  border-radius: 5px;
+  font-size: 11px;
+  font-weight: 600;
+  margin-top: 1px;
+}
+.list-main { flex: 1; min-width: 0; }
+.list-title {
+  font-size: 13.5px;
+  color: #2d3436;
+  line-height: 1.4;
+  white-space: normal;
+  word-break: break-all;
+}
+.list-sub { font-size: 11.5px; color: #95a5a6; margin-top: 2px; }
+.status-card { padding: 12px 16px; }
+.status-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 7px 0;
+  border-bottom: 1px solid #f0f0f5;
+  font-size: 13.5px;
+}
+.status-row:last-child { border-bottom: none; }
+.status-name { color: #57606f; font-weight: 600; }
+.status-val { color: #2d3436; }
+.list-right { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+.list-price { font-size: 13.5px; font-weight: 700; color: #e74c3c; white-space: nowrap; }
+.list-date { font-size: 11.5px; color: #95a5a6; white-space: nowrap; }
+.list-link { font-size: 12px; color: #667eea; text-decoration: none; font-weight: 600; white-space: nowrap; }
+.footer {
+  text-align: center;
+  color: #b2bec3;
+  font-size: 11px;
+  margin-top: 20px;
+  padding: 10px;
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>🔔 乌溪沙租房监控报告</h1>
+  <div class="meta">巡检时间：2026-09-20 00:01:23 (HKT)</div>
+  <div class="meta">筛选条件：2/3/4房 · 月租 ≤ $25,000 HKD</div>
+  <div class="counts">
+    <div class="count">🔴 价格变化 0 套</div>
+    <div class="count">🆕 新增 0 套</div>
+    <div class="count">🔄 更新 0 套</div>
+    <div class="count">⏱ 刷新 0 套</div>
+    <div class="count">📊 基线 134 套</div>
+  </div>
+</div>
+
+<div class="banner banner-ok">✅ 本轮无变化：无新增 · 无价格变化 · 无内容更新</div>
+
+<div class="estate-label">🔴 价格变化（降价 ↓ / 涨价 ↑）</div>
+
+<div class="estate-label">🆕 新增符合条件盘（2/3/4房 ≤ $25,000）</div>
+
+<div class="estate-label">🔄 有内容更新（价格/图片/视频/房型等变化）</div>
+
+<div class="estate-label">⏱ 仅刷新时间（内容未变）</div>
+
+<div class="estate-label">📅 今日+昨日活跃盘（8 套）</div>
+<div class="card list-card">
+<div class="list-row">
+  <div class="list-left"><span class="src-tag">美联</span><div class="list-main"><div class="list-title">迎海 三期(迎海．星灣御) 22座E室 低層 2房</div><div class="list-sub">22座E室 · 496呎 · 2房</div></div></div>
+  <div class="list-right"><span class="list-price">$18,000/月</span><span class="list-date">09-19</span><a class="list-link" href="https://www.midland.com.hk/zh-hk/property/%E6%96%B0%E7%95%8C-%E7%83%8F%E6%BA%AA%E6%B2%99-%E8%BF%8E%E6%B5%B7%E4%B8%89%E6%9C%9F-%E8%BF%8E%E6%B5%B7-%E6%98%9F%E7%81%A3%E5%BE%A1-22%E5%BA%A7%E4%BD%8E%E5%B1%A4E%E5%AE%A4-M351746626" target="_blank" rel="noopener">详情 ↗</a></div>
+</div><div class="list-row">
+  <div class="list-left"><span class="src-tag">28Hse</span><div class="list-main"><div class="list-title">首選租盤</div><div class="list-sub">第一期 第2座 低層  G室 · 491呎 · 2 房 , 1 浴室</div></div></div>
+  <div class="list-right"><span class="list-price">$19,500/月</span><span class="list-date">09-19</span><a class="list-link" href="https://www.28hse.com/rent/apartment/property-4022016" target="_blank" rel="noopener">详情 ↗</a></div>
+</div><div class="list-row">
+  <div class="list-left"><span class="src-tag">美联</span><div class="list-main"><div class="list-title">迎海 一期 2座G室 低層 2房</div><div class="list-sub">2座G室 · 491呎 · 2房</div></div></div>
+  <div class="list-right"><span class="list-price">$20,000/月</span><span class="list-date">09-19</span><a class="list-link" href="https://www.midland.com.hk/zh-hk/property/%E6%96%B0%E7%95%8C-%E7%83%8F%E6%BA%AA%E6%B2%99-%E8%BF%8E%E6%B5%B7%E4%B8%80%E6%9C%9F2%E5%BA%A7%E4%BD%8E%E5%B1%A4G%E5%AE%A4-M351740531" target="_blank" rel="noopener">详情 ↗</a></div>
+</div><div class="list-row">
+  <div class="list-left"><span class="src-tag">28Hse</span><div class="list-main"><div class="list-title">平租盤,大量盤比較</div><div class="list-sub">第一期 第3座 低層 · 491呎</div></div></div>
+  <div class="list-right"><span class="list-price">$20,500/月</span><span class="list-date">09-19</span><a class="list-link" href="https://www.28hse.com/rent/apartment/property-4021935" target="_blank" rel="noopener">详情 ↗</a></div>
+</div><div class="list-row">
+  <div class="list-left"><span class="src-tag">中原</span><div class="list-main"><div class="list-title">银湖．天峰 8座</div><div class="list-sub">541呎 · 2房</div></div></div>
+  <div class="list-right"><span class="list-price">$21,000/月</span><span class="list-date">09-19</span><a class="list-link" href="https://hk.centanet.com/findproperty/zh-cn/detail/%E9%93%B6%E6%B9%96-%E5%A4%A9%E5%B3%B0-8%E5%BA%A7_EMD131?theme=rent" target="_blank" rel="noopener">详情 ↗</a></div>
+</div><div class="list-row">
+  <div class="list-left"><span class="src-tag">28Hse</span><div class="list-main"><div class="list-title">新收匙盤 即時可睇樓</div><div class="list-sub">3座 中層  F室 · 552呎 · 2 房 , 1 浴室</div></div></div>
+  <div class="list-right"><span class="list-price">$22,000/月</span><span class="list-date">09-19</span><a class="list-link" href="https://www.28hse.com/rent/apartment/property-4022495" target="_blank" rel="noopener">详情 ↗</a></div>
+</div><div class="list-row">
+  <div class="list-left"><span class="src-tag">美联</span><div class="list-main"><div class="list-title">迎海 四期(迎海．駿岸) 7座D室 高層 2房</div><div class="list-sub">7座D室 · 496呎 · 2房</div></div></div>
+  <div class="list-right"><span class="list-price">$22,500/月</span><span class="list-date">09-19</span><a class="list-link" href="https://www.midland.com.hk/zh-hk/property/%E6%96%B0%E7%95%8C-%E7%83%8F%E6%BA%AA%E6%B2%99-%E8%BF%8E%E6%B5%B7%E5%9B%9B%E6%9C%9F-%E8%BF%8E%E6%B5%B7-%E9%A7%BF%E5%B2%B8-7%E5%BA%A7%E9%AB%98%E5%B1%A4D%E5%AE%A4-M351923343" target="_blank" rel="noopener">详情 ↗</a></div>
+</div><div class="list-row">
+  <div class="list-left"><span class="src-tag">美联</span><div class="list-main"><div class="list-title">銀湖天峰 3座F室 中層 2房</div><div class="list-sub">3座F室 · 552呎 · 2房</div></div></div>
+  <div class="list-right"><span class="list-price">$22,500/月</span><span class="list-date">09-19</span><a class="list-link" href="https://www.midland.com.hk/zh-hk/property/%E6%96%B0%E7%95%8C-%E9%A6%AC%E9%9E%8D%E5%B1%B1-%E9%8A%80%E6%B9%96%E5%A4%A9%E5%B3%B03%E5%BA%A7%E4%B8%AD%E5%B1%A4F%E5%AE%A4-M352051068" target="_blank" rel="noopener">详情 ↗</a></div>
+</div></div>
+
+<div class="estate-label">📡 各站访问状态</div>
+<div class="card status-card">
+<div class="status-row"><span class="status-name">28Hse</span><span class="status-val">✅ 正常</span></div>
+<div class="status-row"><span class="status-name">美联</span><span class="status-val">✅ 正常</span></div>
+<div class="status-row"><span class="status-name">中原</span><span class="status-val">✅ 正常</span></div>
+<div class="status-row"><span class="status-name">世纪21</span><span class="status-val">✅ 正常</span></div>
+<div class="status-row"><span class="status-name">香港置业</span><span class="status-val">✅ 正常</span></div>
+<div class="status-row"><span class="status-name">利嘉阁</span><span class="status-val">✅ 正常</span></div>
+</div>
+
+<div class="footer">
+  数据来源：28Hse · 美联物业 · 中原地产 · 世纪21 · 香港置业 · 利嘉阁<br>
+  规则：新增盘 / 价格变化（降价·涨价）/ 内容更新（图片、视频、房型等变化）/ 仅刷新时间单独列出<br>
+  中原/利嘉阁首次纳入监控时已记录价格基准，下轮起自动对比价格变化与内容变化<br>
+  美联/香港置业未成功抓取时将在下轮重试
+</div>
+
+</body>
+</html>
