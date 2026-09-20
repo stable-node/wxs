@@ -13,6 +13,27 @@ body {
   line-height: 1.6;
   padding: 12px;
 }
+/* 顶部运行状态条：最后更新时间（无变化也每轮刷新），sticky 常驻视野 */
+.runbar {
+  position: sticky; top: 0; z-index: 999;
+  background: linear-gradient(135deg,#0f9d8e 0%,#0b7a72 100%);
+  color: #fff; border-radius: 14px; padding: 12px 14px; margin-bottom: 14px;
+  box-shadow: 0 4px 16px rgba(11,122,114,.42);
+  text-align: center;
+}
+.runbar-top { display: flex; align-items: center; justify-content: center; gap: 9px; flex-wrap: wrap; }
+.run-status { font-size: 15px; font-weight: 700; }
+.run-time { font-size: 23px; font-weight: 900; letter-spacing: .5px; }
+.runbar-sub { font-size: 12px; opacity: .93; margin-top: 6px; }
+.run-dot {
+  width: 12px; height: 12px; border-radius: 50%; background: #7cfc00; display: inline-block;
+  animation: runpulse 1.6s infinite;
+}
+@keyframes runpulse {
+  0% { box-shadow: 0 0 0 0 rgba(124,252,0,.75); }
+  70% { box-shadow: 0 0 0 11px rgba(124,252,0,0); }
+  100% { box-shadow: 0 0 0 0 rgba(124,252,0,0); }
+}
 .header {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
@@ -186,16 +207,25 @@ body {
 </head>
 <body>
 
+<div class="runbar">
+  <div class="runbar-top">
+    <span class="run-dot"></span>
+    <span class="run-status">系统运行中</span>
+    <span class="run-time">最后更新 2026-09-20 13:00</span>
+  </div>
+  <div class="runbar-sub">每日 08:00–22:00 每小时自动巡检 · 今日已巡检 9 次（HKT）</div>
+</div>
+
 <div class="header">
   <h1>🔔 乌溪沙租房监控报告</h1>
-  <div class="meta">巡检时间：2026-09-20 00:01:23 (HKT)</div>
+  <div class="meta">巡检时间：2026-09-20 13:00:00 (HKT)</div>
   <div class="meta">筛选条件：2/3/4房 · 月租 ≤ $25,000 HKD</div>
   <div class="counts">
     <div class="count">🔴 价格变化 0 套</div>
     <div class="count">🆕 新增 0 套</div>
     <div class="count">🔄 更新 0 套</div>
     <div class="count">⏱ 刷新 0 套</div>
-    <div class="count">📊 基线 134 套</div>
+    <div class="count">📊 基线 136 套</div>
   </div>
 </div>
 
@@ -209,7 +239,7 @@ body {
 
 <div class="estate-label">⏱ 仅刷新时间（内容未变）</div>
 
-<div class="estate-label">📅 今日+昨日活跃盘（8 套）</div>
+<div class="estate-label">📅 今日+昨日活跃盘（10 套）</div>
 <div class="card list-card">
 <div class="list-row">
   <div class="list-left"><span class="src-tag">美联</span><div class="list-main"><div class="list-title">迎海 三期(迎海．星灣御) 22座E室 低層 2房</div><div class="list-sub">22座E室 · 496呎 · 2房</div></div></div>
@@ -230,11 +260,17 @@ body {
   <div class="list-left"><span class="src-tag">28Hse</span><div class="list-main"><div class="list-title">新收匙盤 即時可睇樓</div><div class="list-sub">3座 中層  F室 · 552呎 · 2 房 , 1 浴室</div></div></div>
   <div class="list-right"><span class="list-price">$22,000/月</span><span class="list-date">09-19</span><a class="list-link" href="https://www.28hse.com/rent/apartment/property-4022495" target="_blank" rel="noopener">详情 ↗</a></div>
 </div><div class="list-row">
+  <div class="list-left"><span class="src-tag">美联</span><div class="list-main"><div class="list-title">銀湖天峰 3座G室 高層 2房</div><div class="list-sub">3座G室 · 552呎 · 2房</div></div></div>
+  <div class="list-right"><span class="list-price">$22,000/月</span><span class="list-date">09-19</span><a class="list-link" href="https://www.midland.com.hk/zh-hk/property/%E6%96%B0%E7%95%8C-%E9%A6%AC%E9%9E%8D%E5%B1%B1-%E9%8A%80%E6%B9%96%E5%A4%A9%E5%B3%B03%E5%BA%A7%E9%AB%98%E5%B1%A4G%E5%AE%A4-M352021823" target="_blank" rel="noopener">详情 ↗</a></div>
+</div><div class="list-row">
   <div class="list-left"><span class="src-tag">美联</span><div class="list-main"><div class="list-title">迎海 四期(迎海．駿岸) 7座D室 高層 2房</div><div class="list-sub">7座D室 · 496呎 · 2房</div></div></div>
   <div class="list-right"><span class="list-price">$22,500/月</span><span class="list-date">09-19</span><a class="list-link" href="https://www.midland.com.hk/zh-hk/property/%E6%96%B0%E7%95%8C-%E7%83%8F%E6%BA%AA%E6%B2%99-%E8%BF%8E%E6%B5%B7%E5%9B%9B%E6%9C%9F-%E8%BF%8E%E6%B5%B7-%E9%A7%BF%E5%B2%B8-7%E5%BA%A7%E9%AB%98%E5%B1%A4D%E5%AE%A4-M351923343" target="_blank" rel="noopener">详情 ↗</a></div>
 </div><div class="list-row">
   <div class="list-left"><span class="src-tag">美联</span><div class="list-main"><div class="list-title">銀湖天峰 3座F室 中層 2房</div><div class="list-sub">3座F室 · 552呎 · 2房</div></div></div>
   <div class="list-right"><span class="list-price">$22,500/月</span><span class="list-date">09-19</span><a class="list-link" href="https://www.midland.com.hk/zh-hk/property/%E6%96%B0%E7%95%8C-%E9%A6%AC%E9%9E%8D%E5%B1%B1-%E9%8A%80%E6%B9%96%E5%A4%A9%E5%B3%B03%E5%BA%A7%E4%B8%AD%E5%B1%A4F%E5%AE%A4-M352051068" target="_blank" rel="noopener">详情 ↗</a></div>
+</div><div class="list-row">
+  <div class="list-left"><span class="src-tag">美联</span><div class="list-main"><div class="list-title">迎海 二期(迎海．星灣) 19座F室 低層 2房</div><div class="list-sub">19座F室 · 511呎 · 2房</div></div></div>
+  <div class="list-right"><span class="list-price">$24,000/月</span><span class="list-date">09-19</span><a class="list-link" href="https://www.midland.com.hk/zh-hk/property/%E6%96%B0%E7%95%8C-%E7%83%8F%E6%BA%AA%E6%B2%99-%E8%BF%8E%E6%B5%B7%E4%BA%8C%E6%9C%9F-%E8%BF%8E%E6%B5%B7-%E6%98%9F%E7%81%A3-19%E5%BA%A7%E4%BD%8E%E5%B1%A4F%E5%AE%A4-M351929295" target="_blank" rel="noopener">详情 ↗</a></div>
 </div></div>
 
 <div class="estate-label">📡 各站访问状态</div>
@@ -244,7 +280,7 @@ body {
 <div class="status-row"><span class="status-name">中原</span><span class="status-val">✅ 正常</span></div>
 <div class="status-row"><span class="status-name">世纪21</span><span class="status-val">✅ 正常</span></div>
 <div class="status-row"><span class="status-name">香港置业</span><span class="status-val">✅ 正常</span></div>
-<div class="status-row"><span class="status-name">利嘉阁</span><span class="status-val">✅ 正常</span></div>
+<div class="status-row"><span class="status-name">利嘉阁</span><span class="status-val">❌ timeout:The read operation timed out</span></div>
 </div>
 
 <div class="footer">
